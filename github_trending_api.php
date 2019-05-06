@@ -16,6 +16,6 @@ curl_setopt($languages, CURLOPT_RETURNTRANSFER, true);
 $languages_results = json_decode(curl_exec($languages));
 //var_dump(curl_getinfo($languages));
 foreach($languages_results as $key => $language) {
-    var_dump($language[$language]->urlParam);
+    //var_dump($language[$language]->urlParam);
 }
 //var_dump($languages_results);
