@@ -1,41 +1,53 @@
 <?php
 include('api_request.php');
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Top & Trending Articles - HackerNews</title>
-    <link rel="stylesheet" href="styles/style.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
-<body>
-<div class="container">
+include('header.php');
 
-    <h1>Top Stories on Hacker News</h1>
+define('TOP_STORIES', 'https://hacker-news.firebaseio.com/v0/topstories.json');
+
+//var_dump(json_decode(api_endpoint_call(TOP_STORIES)));
+
+?>
+<h1>Top Stories on Hacker News</h1>
 
 <div class="row">
 
 <?php
+// Get top stories 
+
+//$topStoriesIds = api_endpoint_call('https://hacker-news.firebaseio.com/v0/topstories.json');
+/*foreach($test as $id){
+    curl_setopt($ch, CURLOPT_URL, 'https://hacker-news.firebaseio.com/v0/item/' . $id . '.json');
+    $res = json_decode(curl_exec($ch));
+    echo '<a href="'. $res->url .'">' . $res->by . '</a>' . '<br>';
+}
+*/
+function init_resource($url, $id)
+{
+    $resource = curl_init();
+    curl_setopt($resource, CURLOPT_URL, $url . $id . '.json');
+    return $result = curl_exec($resource);
+}
+
+//$ch = curl_init();
 foreach ($topStoriesIds as $id){
+    
     curl_setopt($ch, CURLOPT_URL, 'https://hacker-news.firebaseio.com/v0/item/' . $id . '.json');
    
-   $result = curl_exec($ch);
+   //$result = init_resource('https://hacker-news.firebaseio.com/v0/item/', $id);
     
    echo '<div class="col-md-4 single_card">';
 
-    if(curl_getinfo($ch)['http_code'] === 200) {
+        $result = curl_exec($ch);
         
-        $story = json_decode($result); ?>
+        $story = json_decode($result); 
+?>
       
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
                     <h5 class="card-title"><?php  echo $story->title; ?></h5>
                     <h6 class="card-subtitle mb-2 text-muted">by <?php echo $story->by; ?></h6>
                     <p class="card-text"><?php echo 'Category: ' . $story->type ?></p>
-                    <a href=" <?php echo $story->url; ?> " class="card-link">Read More...</a>
+                    <a href=" <?php echo $story->url; ?> " target="_blank" class="card-link">Read More...</a>
                 </div>
             
         </div> 
@@ -43,7 +55,7 @@ foreach ($topStoriesIds as $id){
         echo '</div>';
         //echo '<a href="' . $story->url . '" >' . $story->title . '</a> <br>'; 
     }
-}
+
         ?>
 
     </div>
@@ -54,13 +66,11 @@ foreach ($topStoriesIds as $id){
 
 <?php
 foreach ($best_stories_id as $id){
-    curl_setopt($best_stories, CURLOPT_URL, 'https://hacker-news.firebaseio.com/v0/item/' . $id . '.json');
+    curl_setopt($ch, CURLOPT_URL, 'https://hacker-news.firebaseio.com/v0/item/' . $id . '.json');
    
-   $result = curl_exec($best_stories);
+   $result = curl_exec($ch);
     
    echo '<div class="col-md-4 single_card">';
-
-    if(curl_getinfo($best_stories)['http_code'] === 200) {
         
         $story = json_decode($result); ?>
       
@@ -69,30 +79,28 @@ foreach ($best_stories_id as $id){
                     <h5 class="card-title"><?php  echo $story->title; ?></h5>
                     <h6 class="card-subtitle mb-2 text-muted">by <?php echo $story->by; ?></h6>
                     <p class="card-text"><?php echo 'Category: ' . $story->type ?></p> 
-                    <a href=" <?php echo $story->url; ?> " class="card-link">Read More...</a>
+                    <a href=" <?php echo $story->url; ?> " target="_blank" class="card-link">Read More...</a>
                 </div>
             
         </div> 
         <?php 
         echo '</div>';
         //echo '<a href="' . $story->url . '" >' . $story->title . '</a> <br>'; 
+    
     }
-}
         ?>
-
+    </div>
     <h1>New Storie on Hacker News</h1>
 
 <div class="row">
 
 <?php
 foreach ($new_stories_id as $id){
-    curl_setopt($new_stories, CURLOPT_URL, 'https://hacker-news.firebaseio.com/v0/item/' . $id . '.json');
+    curl_setopt($ch, CURLOPT_URL, 'https://hacker-news.firebaseio.com/v0/item/' . $id . '.json');
    
-   $result = curl_exec($new_stories);
+   $result = curl_exec($ch);
     
    echo '<div class="col-md-4 single_card">';
-
-    if(curl_getinfo($new_stories)['http_code'] === 200) {
         
         $story = json_decode($result); ?>
       
@@ -101,22 +109,19 @@ foreach ($new_stories_id as $id){
                     <h5 class="card-title"><?php  echo $story->title; ?></h5>
                     <h6 class="card-subtitle mb-2 text-muted">by <?php echo $story->by; ?></h6>
                     <p class="card-text"><?php echo 'Category: ' . $story->type ?></p>
-                    <a href=" <?php echo $story->url; ?> " class="card-link">Read More...</a>
+                    <a href=" <?php echo $story->url; ?> " target="_blank" class="card-link">Read More...</a>
                 </div>
             
-        </div> 
+            </div> 
         <?php 
         echo '</div>';
         //echo '<a href="' . $story->url . '" >' . $story->title . '</a> <br>'; 
     }
-}
-        ?>
+      ?>
 
     </div>
-</div>
+
 
 <?php 
 include('footer.php');
 ?>
-</body>
-</html>
